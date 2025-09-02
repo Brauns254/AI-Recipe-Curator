@@ -4,7 +4,6 @@ import type { Recipe } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Utensils } from "lucide-react";
-import Image from 'next/image';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -16,15 +15,6 @@ export default function RecipeCard({ recipe, onSelect }: RecipeCardProps) {
 
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg">
-       <div className="relative h-48 w-full">
-         <Image 
-          src={`https://picsum.photos/seed/${recipe.title}/600/400`}
-          alt={recipe.title}
-          data-ai-hint="food recipe"
-          fill
-          style={{ objectFit: 'cover' }}
-        />
-       </div>
       <CardHeader>
         <CardTitle className="font-headline text-xl">{recipe.title}</CardTitle>
       </CardHeader>

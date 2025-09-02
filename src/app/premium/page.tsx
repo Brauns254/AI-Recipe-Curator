@@ -70,7 +70,7 @@ export default function PremiumPage() {
     await new Promise(resolve => setTimeout(resolve, 4000)); // Simulate M-Pesa STK push and user payment
     setView('success');
     await new Promise(resolve => setTimeout(resolve, 2000)); // Show success for a bit
-    upgradePremium(selectedPlan, true);
+    upgradePremium(selectedPlan);
   };
   
   const formatTime = (ms: number) => {
@@ -140,7 +140,7 @@ export default function PremiumPage() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <Check className="h-12 w-12 text-green-500 bg-green-100 rounded-full p-2" />
                 <p className="font-semibold text-lg">Payment Successful!</p>
-                <p className="text-sm text-muted-foreground">Welcome to Premium! Redirecting...</p>
+                <p className="text-sm text-muted-foreground">Welcome to Premium!</p>
             </div>
         );
 
