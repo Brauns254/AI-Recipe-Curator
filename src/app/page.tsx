@@ -1,10 +1,16 @@
 import RecipeGenerator from '@/components/RecipeGenerator';
 import { Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <section className="text-center py-12 md:py-20">
+        <div className="flex justify-between items-center mb-4">
+          <Link href="/" className="text-sm text-muted-foreground hover:underline">
+            go back to home page
+          </Link>
+        </div>
         <div className="mb-4 inline-flex items-center justify-center rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
           <Sparkles className="mr-2 h-4 w-4" />
           Powered by Gemini AI

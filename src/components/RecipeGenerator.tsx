@@ -10,6 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, AlertCircle, Sparkles } from "lucide-react";
 import RecipeList from "./RecipeList";
 import { useAuth } from "@/contexts/AuthContext";
+import RemainingTime from "./RemainingTime";
 
 const initialState = {
   error: undefined,
@@ -40,7 +41,7 @@ export default function RecipeGenerator() {
   const [state, formAction] = useActionState(generateRecipesAction, initialState);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPending, startTransition] = useTransition();
-  const { addRecipes } = useAuth();
+  const { addRecipes, user } = useAuth();
   const formRef = React.useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -55,6 +56,7 @@ export default function RecipeGenerator() {
 
   return (
     <div className="space-y-8">
+      {user?.isPremium && user.subscription === 'daily' && <RemainingTime />}
       <div className="mx-auto max-w-2xl rounded-lg border bg-card p-6 shadow-sm">
         <form ref={formRef} action={formAction} className="space-y-4">
           <div className="space-y-2">
