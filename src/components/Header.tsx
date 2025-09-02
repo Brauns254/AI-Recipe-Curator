@@ -28,7 +28,7 @@ export default function Header() {
               href="/premium"
               className="hidden text-foreground/60 transition-colors hover:text-foreground/80 lg:block"
             >
-              Go Premium
+              {user?.isPremium ? 'Premium Status' : 'Go Premium'}
             </Link>
         </nav>
 
