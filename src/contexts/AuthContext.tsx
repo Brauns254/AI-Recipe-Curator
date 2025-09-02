@@ -101,6 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       persistUser({ ...user, subscription: type, subscriptionEndDate });
+      router.push('/');
     }
   };
 

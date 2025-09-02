@@ -3,7 +3,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Gem, Loader2, Phone, Sparkles } from "lucide-react";
+import { Check, Gem, Loader2, Phone, Sparkles, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,7 @@ export default function PremiumPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [showCountdown, setShowCountdown] = useState(false);
 
   useEffect(() => {
     if (user?.isPremium) {
@@ -66,8 +67,9 @@ export default function PremiumPage() {
     }
     setView('processing');
     await new Promise(resolve => setTimeout(resolve, 4000)); // Simulate M-Pesa STK push and user payment
-    upgradePremium(selectedPlan);
     setView('success');
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Show success for a bit
+    upgradePremium(selectedPlan);
   };
   
   const formatTime = (ms: number) => {
@@ -93,10 +95,20 @@ export default function PremiumPage() {
 
       case 'countdown':
         return (
-          <div className="text-center space-y-2">
+          <div className="text-center space-y-4">
             <p className="font-semibold">Your daily plan is active!</p>
-            <p className="text-sm text-muted-foreground">Time Remaining:</p>
-            <p className="text-2xl font-bold font-mono tracking-wider">{formatTime(remainingTime)}</p>
+            {showCountdown ? (
+              <>
+                <p className="text-sm text-muted-foreground">Time Remaining:</p>
+                <p className="text-2xl font-bold font-mono tracking-wider">{formatTime(remainingTime)}</p>
+                <Button variant="link" onClick={() => setShowCountdown(false)}>Hide Time</Button>
+              </>
+            ) : (
+               <Button onClick={() => setShowCountdown(true)}>
+                <Clock className="mr-2 h-4 w-4" />
+                Check Remaining Time
+              </Button>
+            )}
           </div>
         );
 
@@ -114,7 +126,7 @@ export default function PremiumPage() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <Check className="h-12 w-12 text-green-500 bg-green-100 rounded-full p-2" />
                 <p className="font-semibold text-lg">Payment Successful!</p>
-                <p className="text-sm text-muted-foreground">Welcome to Premium! You can now access all features.</p>
+                <p className="text-sm text-muted-foreground">Welcome to Premium! Redirecting...</p>
             </div>
         );
 
