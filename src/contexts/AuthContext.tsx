@@ -101,8 +101,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       persistUser({ ...user, subscription: type, subscriptionEndDate });
-      // The toast is now handled in the premium page, so we just redirect
-      setTimeout(() => router.push("/"), 2000); // Wait for success message to be seen
     }
   };
 
