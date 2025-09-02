@@ -12,7 +12,7 @@ interface AuthContextType {
   login: (name: string) => void;
   logout: () => void;
   register: (name: string) => void;
-  upgradePremium: (type: 'monthly' | 'daily') => void;
+  upgradePremium: (type: SubscriptionType) => void;
   toggleFavorite: (recipe: Recipe) => void;
   addRecipes: (newRecipes: Recipe[]) => void;
 }
@@ -101,13 +101,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       persistUser({ ...user, subscription: type, subscriptionEndDate });
-      toast({
-        title: "Congratulations!",
-        description: "You are now a premium member.",
-        variant: "default",
-        className: "bg-primary text-primary-foreground",
-      });
-      router.push("/");
+      // The toast is now handled in the premium page, so we just redirect
+      setTimeout(() => router.push("/"), 2000); // Wait for success message to be seen
     }
   };
 

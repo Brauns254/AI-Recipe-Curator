@@ -3,13 +3,13 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Gem, Loader2, Phone } from "lucide-react";
+import { Check, Gem, Loader2, Phone, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-type View = 'options' | 'payment' | 'countdown' | 'already_premium';
+type View = 'options' | 'payment' | 'processing' | 'success' | 'countdown' | 'already_premium';
 
 const features = [
   "AI-powered step-by-step instructions",
@@ -64,11 +64,10 @@ export default function PremiumPage() {
       alert("Please enter a valid phone number e.g 0712345678");
       return;
     }
-    setIsProcessing(true);
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    setView('processing');
+    await new Promise(resolve => setTimeout(resolve, 4000)); // Simulate M-Pesa STK push and user payment
     upgradePremium(selectedPlan);
-    setIsProcessing(false);
+    setView('success');
   };
   
   const formatTime = (ms: number) => {
@@ -100,12 +99,30 @@ export default function PremiumPage() {
             <p className="text-2xl font-bold font-mono tracking-wider">{formatTime(remainingTime)}</p>
           </div>
         );
-        
+
+      case 'processing':
+        return (
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="font-semibold">An M-Pesa prompt has been sent to your phone.</p>
+                <p className="text-sm text-muted-foreground">Please enter your PIN to complete the payment. Waiting for confirmation...</p>
+            </div>
+        );
+
+      case 'success':
+        return (
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                <Check className="h-12 w-12 text-green-500 bg-green-100 rounded-full p-2" />
+                <p className="font-semibold text-lg">Payment Successful!</p>
+                <p className="text-sm text-muted-foreground">Welcome to Premium! You can now access all features.</p>
+            </div>
+        );
+
       case 'payment':
         return (
           <div className="space-y-4">
             <p className="text-center text-sm text-muted-foreground">
-              Enter your MPesa number to complete the payment.
+              Enter your M-Pesa number to complete the payment.
             </p>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -118,13 +135,8 @@ export default function PremiumPage() {
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </div>
-            <Button onClick={handlePayment} disabled={isProcessing} className="w-full">
-              {isProcessing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : `Pay Ksh ${selectedPlan === 'monthly' ? 200 : 20}`}
+            <Button onClick={handlePayment} className="w-full">
+               Pay Ksh {selectedPlan === 'monthly' ? 200 : 20}
             </Button>
              <Button variant="link" onClick={() => setView('options')} className="w-full">
               Back to options
