@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useTransition } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import React, { useState, useEffect, useTransition, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { generateRecipesAction } from "@/app/actions";
 import type { Recipe } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ function SubmitButton() {
 }
 
 export default function RecipeGenerator() {
-  const [state, formAction] = useFormState(generateRecipesAction, initialState);
+  const [state, formAction] = useActionState(generateRecipesAction, initialState);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPending, startTransition] = useTransition();
   const { addRecipes } = useAuth();
