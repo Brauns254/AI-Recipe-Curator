@@ -12,7 +12,7 @@ interface AuthContextType {
   login: (name: string) => void;
   logout: () => void;
   register: (name: string) => void;
-  upgradePremium: (type: SubscriptionType) => void;
+  upgradePremium: (type: SubscriptionType, redirect?: boolean) => void;
   toggleFavorite: (recipe: Recipe) => void;
   addRecipes: (newRecipes: Recipe[]) => void;
 }
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     router.push("/");
   };
 
-  const upgradePremium = (type: SubscriptionType) => {
+  const upgradePremium = (type: SubscriptionType, redirect = false) => {
     if (user) {
       const now = new Date().getTime();
       let subscriptionEndDate: number | undefined = undefined;
@@ -101,7 +101,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       persistUser({ ...user, subscription: type, subscriptionEndDate });
-      router.push('/');
+      if (redirect) {
+        router.push('/');
+      }
     }
   };
 

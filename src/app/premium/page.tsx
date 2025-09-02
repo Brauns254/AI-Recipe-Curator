@@ -3,11 +3,12 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Gem, Loader2, Phone, Sparkles, Clock } from "lucide-react";
+import { Check, Gem, Loader2, Phone, Sparkles, Clock, Utensils } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Link from "next/link";
 
 type View = 'options' | 'payment' | 'processing' | 'success' | 'countdown' | 'already_premium';
 
@@ -69,7 +70,7 @@ export default function PremiumPage() {
     await new Promise(resolve => setTimeout(resolve, 4000)); // Simulate M-Pesa STK push and user payment
     setView('success');
     await new Promise(resolve => setTimeout(resolve, 2000)); // Show success for a bit
-    upgradePremium(selectedPlan);
+    upgradePremium(selectedPlan, true);
   };
   
   const formatTime = (ms: number) => {
@@ -88,8 +89,15 @@ export default function PremiumPage() {
     switch (view) {
       case 'already_premium':
         return (
-          <div className="w-full text-center text-lg font-semibold text-green-600">
-             You are already a Premium Member!
+          <div className="w-full text-center space-y-4">
+             <p className="text-lg font-semibold text-green-600">You are a Premium Member!</p>
+             <p className="text-sm text-muted-foreground">Start discovering new recipes now.</p>
+             <Button asChild>
+                <Link href="/">
+                    <Utensils className="mr-2 h-4 w-4" />
+                    Find Recipes
+                </Link>
+             </Button>
           </div>
         );
 
@@ -109,6 +117,12 @@ export default function PremiumPage() {
                 Check Remaining Time
               </Button>
             )}
+            <Button asChild>
+                <Link href="/">
+                    <Utensils className="mr-2 h-4 w-4" />
+                    Find Recipes
+                </Link>
+            </Button>
           </div>
         );
 
