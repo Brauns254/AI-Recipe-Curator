@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Check, Gem } from "lucide-react";
 
 const features = [
-  "Unlimited recipe generations",
   "AI-powered step-by-step instructions",
   "Save and access favorite recipes",
   "Priority support",
@@ -25,8 +24,8 @@ export default function PremiumPage() {
         </CardHeader>
         <CardContent className="space-y-4">
             <p className="text-center">
-                <span className="text-4xl font-bold">$9.99</span>
-                <span className="text-muted-foreground">/month</span>
+                <span className="text-4xl font-bold">Ksh 20</span>
+                <span className="text-muted-foreground">/recipe</span>
             </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             {features.map((feature) => (
