@@ -4,11 +4,19 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**",
-      "src/ai/**"
+      "**/node_modules/**"
     ],
     "frameworksBackend": {
       "region": "us-central1"
     }
+  },
+  "dataconnect": {
+    "source": "src/ai/flows",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**"
+    ]
   }
 }
