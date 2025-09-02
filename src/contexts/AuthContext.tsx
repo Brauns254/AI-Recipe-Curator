@@ -1,24 +1,18 @@
 "use client";
 
-import type { Recipe } from "@/types";
+import type { Recipe, User, SubscriptionType } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-interface User {
-  name: string;
-  isLoggedIn: boolean;
-  isPremium: boolean;
-}
-
 interface AuthContextType {
-  user: User | null;
+  user: (User & { isPremium: boolean }) | null;
   favorites: string[];
   allRecipes: Recipe[];
   login: (name: string) => void;
   logout: () => void;
   register: (name: string) => void;
-  upgradePremium: () => void;
+  upgradePremium: (type: 'monthly' | 'daily') => void;
   toggleFavorite: (recipe: Recipe) => void;
   addRecipes: (newRecipes: Recipe[]) => void;
 }
@@ -33,6 +27,12 @@ const safeJSONParse = (item: string | null) => {
     return null;
   }
 };
+
+const defaultUser: User = {
+  name: '',
+  isLoggedIn: false,
+  subscription: 'none',
+}
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (name: string) => {
     const existingUser = safeJSONParse(localStorage.getItem("recipeUser"));
-    persistUser({ name, isLoggedIn: true, isPremium: existingUser?.isPremium || false });
+    persistUser({ ...defaultUser, ...existingUser, name, isLoggedIn: true });
     toast({ title: "Welcome back!", description: "You are now logged in." });
     router.push("/");
   };
@@ -87,14 +87,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   
   const register = (name: string) => {
-    persistUser({ name, isLoggedIn: true, isPremium: false });
+    persistUser({ ...defaultUser, name, isLoggedIn: true });
     toast({ title: "Account created!", description: "Welcome to AI Recipe Curator." });
     router.push("/");
   };
 
-  const upgradePremium = () => {
+  const upgradePremium = (type: SubscriptionType) => {
     if (user) {
-      persistUser({ ...user, isPremium: true });
+      const now = new Date().getTime();
+      let subscriptionEndDate: number | undefined = undefined;
+      if (type === 'daily') {
+        subscriptionEndDate = now + 24 * 60 * 60 * 1000;
+      }
+      
+      persistUser({ ...user, subscription: type, subscriptionEndDate });
       toast({
         title: "Congratulations!",
         description: "You are now a premium member.",
@@ -124,9 +130,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [allRecipes, persistAllRecipes]);
 
+  const isSubscriptionActive = (user: User | null): boolean => {
+    if (!user) return false;
+    if (user.subscription === 'monthly') return true;
+    if (user.subscription === 'daily' && user.subscriptionEndDate) {
+      return new Date().getTime() < user.subscriptionEndDate;
+    }
+    return false;
+  };
+  
+  const userWithPremium = user ? { ...user, isPremium: isSubscriptionActive(user) } : null;
+
   return (
     <AuthContext.Provider
-      value={{ user, favorites, allRecipes, login, logout, register, upgradePremium, toggleFavorite, addRecipes }}
+      value={{ user: userWithPremium, favorites, allRecipes, login, logout, register, upgradePremium, toggleFavorite, addRecipes }}
     >
       {children}
     </AuthContext.Provider>
